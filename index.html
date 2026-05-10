@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>$EINS — Einstein Coin | Relatively Rich. Absolutely Degen.</title>
+<meta name="description" content="The smartest memecoin on Solana. Fair launch. 0 taxes. LP burnt. Mint revoked. Even Albert's ghost is holding a bag.">
+<meta property="og:title" content="$EINS — Einstein Coin">
+<meta property="og:description" content="Relatively rich. Absolutely degen. The ghost of Einstein launched a memecoin on Solana.">
+<meta property="og:image" content="https://einsteincoin.xyz/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#00ff88;
+  --green-dim:#00cc6a;
+  --green-glow:rgba(0,255,136,0.15);
+  --bg:#060608;
+  --bg2:#0c0d10;
+  --bg3:#111318;
+  --white:#f0ede6;
+  --muted:#6b6f7a;
+  --border:rgba(0,255,136,0.12);
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--white);
+  font-family:'Syne',sans-serif;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* CURSOR */
+.cursor{position:fixed;width:8px;height:8px;background:var(--green);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s;mix-blend-mode:difference}
+.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid var(--green);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all 0.15s ease;opacity:0.5}
+
+/* CANVAS background */
+#chalk-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.07;pointer-events:none}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 3rem;
+  backdrop-filter:blur(12px);
+  background:rgba(6,6,8,0.8);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.8rem;
+  color:var(--green);
+  letter-spacing:0.05em;
+  text-decoration:none;
+}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{
+  color:var(--muted);
+  text-decoration:none;
+  font-size:0.8rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--green)}
+.nav-cta{
+  background:var(--green);
+  color:#000;
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  font-size:0.8rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  padding:0.55rem 1.4rem;
+  border:none;
+  cursor:none;
+  text-decoration:none;
+  transition:all 0.2s;
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+}
+.nav-cta:hover{background:#fff;transform:translateY(-1px)}
+
+/* HERO */
+#hero{
+  position:relative;
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;
+  padding:8rem 2rem 4rem;
+  z-index:1;
+  overflow:hidden;
+}
+.hero-eyebrow{
+  font-family:'DM Mono',monospace;
+  font-size:0.75rem;
+  color:var(--green);
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+  margin-bottom:1.5rem;
+  opacity:0;
+  animation:fadeUp 0.8s 0.2s forwards;
+}
+.hero-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(4rem,12vw,11rem);
+  line-height:0.9;
+  letter-spacing:0.02em;
+  margin-bottom:1.5rem;
+  opacity:0;
+  animation:fadeUp 0.8s 0.4s forwards;
+}
+.hero-title span{color:var(--green);position:relative;display:inline-block}
+.hero-title span::after{
+  content:'';
+  position:absolute;bottom:-4px;left:0;right:0;height:3px;
+  background:var(--green);
+  transform:scaleX(0);
+  animation:scaleIn 0.6s 1.2s forwards;
+}
+.hero-sub{
+  font-size:clamp(1rem,2.5vw,1.4rem);
+  color:var(--muted);
+  max-width:600px;
+  line-height:1.6;
+  margin-bottom:3rem;
+  opacity:0;
+  animation:fadeUp 0.8s 0.6s forwards;
+}
+.hero-sub em{color:var(--white);font-style:normal}
+.hero-actions{
+  display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;
+  opacity:0;
+  animation:fadeUp 0.8s 0.8s forwards;
+  margin-bottom:4rem;
+}
+.btn-primary{
+  background:var(--green);color:#000;
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:0.9rem;letter-spacing:0.08em;text-transform:uppercase;
+  padding:1rem 2.5rem;text-decoration:none;
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+  transition:all 0.2s;display:inline-block;
+}
+.btn-primary:hover{background:#fff;transform:translateY(-2px)}
+.btn-secondary{
+  border:1px solid var(--border);color:var(--white);
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:0.9rem;letter-spacing:0.08em;text-transform:uppercase;
+  padding:1rem 2.5rem;text-decoration:none;
+  transition:all 0.2s;display:inline-block;
+}
+.btn-secondary:hover{border-color:var(--green);color:var(--green)}
+
+.ticker-bar{
+  display:flex;gap:3rem;align-items:center;
+  font-family:'DM Mono',monospace;font-size:0.75rem;
+  color:var(--muted);letter-spacing:0.1em;
+  opacity:0;animation:fadeUp 0.8s 1s forwards;
+}
+.ticker-bar span{color:var(--green)}
+.ticker-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+
+/* MARQUEE */
+.marquee-wrap{
+  position:relative;z-index:2;
+  overflow:hidden;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  background:rgba(0,255,136,0.03);
+  padding:1rem 0;
+}
+.marquee-track{
+  display:flex;gap:4rem;white-space:nowrap;
+  animation:marquee 20s linear infinite;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.2rem;
+  letter-spacing:0.1em;
+  color:var(--muted);
+}
+.marquee-track span{color:var(--green)}
+
+/* SECTIONS */
+section{position:relative;z-index:1}
+.section-inner{max-width:1100px;margin:0 auto;padding:6rem 2rem}
+.section-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.7rem;color:var(--green);
+  letter-spacing:0.25em;text-transform:uppercase;
+  margin-bottom:1rem;
+}
+.section-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.5rem,6vw,5rem);
+  line-height:1;
+  margin-bottom:1.5rem;
+}
+
+/* ABOUT */
+#about{background:var(--bg2)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.about-visual{
+  position:relative;
+  aspect-ratio:1;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.about-visual-inner{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:6rem;
+  color:var(--green);
+  opacity:0.15;
+  line-height:1;
+  text-align:center;
+  padding:2rem;
+}
+.formula-badge{
+  position:absolute;bottom:1.5rem;right:1.5rem;
+  background:var(--green);color:#000;
+  font-family:'DM Mono',monospace;font-size:0.7rem;font-weight:500;
+  padding:0.4rem 0.8rem;
+  letter-spacing:0.1em;
+}
+.about-text p{
+  font-size:1.05rem;line-height:1.8;
+  color:rgba(240,237,230,0.75);
+  margin-bottom:1.5rem;
+}
+.about-text p strong{color:var(--white)}
+.about-quote{
+  border-left:3px solid var(--green);
+  padding-left:1.5rem;
+  margin-top:2rem;
+  font-family:'DM Mono',monospace;
+  font-size:0.9rem;
+  font-style:italic;
+  color:var(--green-dim);
+  line-height:1.6;
+}
+
+/* TOKENOMICS */
+#tokenomics{background:var(--bg)}
+.token-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+.token-card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  padding:1.8rem;
+  position:relative;
+  overflow:hidden;
+  transition:border-color 0.3s;
+}
+.token-card::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--green);
+  transform:scaleX(0);
+  transition:transform 0.3s;
+}
+.token-card:hover{border-color:rgba(0,255,136,0.4)}
+.token-card:hover::before{transform:scaleX(1)}
+.token-card-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.7rem;color:var(--muted);
+  letter-spacing:0.15em;text-transform:uppercase;
+  margin-bottom:0.8rem;
+}
+.token-card-value{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.5rem;color:var(--green);
+  line-height:1;margin-bottom:0.4rem;
+}
+.token-card-sub{font-size:0.8rem;color:var(--muted);line-height:1.4}
+
+.donut-wrap{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin-top:4rem}
+.donut-svg{width:100%;max-width:320px;margin:0 auto;display:block}
+.donut-legend{display:flex;flex-direction:column;gap:1.2rem}
+.legend-item{display:flex;align-items:center;gap:1rem}
+.legend-dot{width:12px;height:12px;flex-shrink:0}
+.legend-pct{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--white);margin-right:0.5rem}
+.legend-label{font-size:0.85rem;color:var(--muted);line-height:1.3}
+.legend-label strong{color:var(--white);display:block;font-size:0.9rem}
+
+/* ROADMAP */
+#roadmap{background:var(--bg2)}
+.roadmap-phases{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3rem}
+.phase{
+  background:var(--bg);
+  border:1px solid var(--border);
+  padding:1.8rem;
+  position:relative;
+}
+.phase-num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:4rem;color:rgba(0,255,136,0.08);
+  line-height:1;position:absolute;top:1rem;right:1rem;
+}
+.phase-tag{
+  font-family:'DM Mono',monospace;
+  font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;
+  padding:0.3rem 0.7rem;margin-bottom:1rem;display:inline-block;
+}
+.phase-tag.done{background:rgba(0,255,136,0.12);color:var(--green)}
+.phase-tag.active{background:rgba(255,200,0,0.1);color:#ffc800}
+.phase-tag.soon{background:rgba(100,100,120,0.2);color:var(--muted)}
+.phase h3{font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;margin-bottom:1.2rem;letter-spacing:0.05em}
+.phase ul{list-style:none;display:flex;flex-direction:column;gap:0.6rem}
+.phase ul li{
+  font-size:0.8rem;color:var(--muted);
+  display:flex;gap:0.5rem;align-items:flex-start;line-height:1.4;
+}
+.phase ul li.done-item{color:rgba(240,237,230,0.6)}
+.phase ul li::before{content:'→';color:var(--green);flex-shrink:0;font-size:0.7rem;margin-top:1px}
+.phase ul li.done-item::before{content:'✓';color:var(--green)}
+
+/* HOW TO BUY */
+#buy{background:var(--bg)}
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:3rem;position:relative}
+.steps-grid::before{
+  content:'';
+  position:absolute;top:2rem;left:0;right:0;height:1px;
+  background:var(--border);z-index:0;
+}
+.step{
+  padding:0 1.5rem;position:relative;z-index:1;
+}
+.step:first-child{padding-left:0}
+.step-circle{
+  width:4rem;height:4rem;
+  border:1px solid var(--green);
+  border-radius:50%;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--green);
+  margin-bottom:1.5rem;
+}
+.step h3{font-size:0.9rem;font-weight:700;letter-spacing:0.05em;margin-bottom:0.8rem}
+.step p{font-size:0.82rem;color:var(--muted);line-height:1.6}
+.step a{color:var(--green);text-decoration:none}
+.step a:hover{text-decoration:underline}
+
+/* CA BOX */
+.ca-box{
+  margin-top:3rem;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  padding:1.5rem 2rem;
+  display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;
+}
+.ca-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.7rem;color:var(--muted);
+  letter-spacing:0.15em;text-transform:uppercase;
+  white-space:nowrap;
+}
+.ca-address{
+  font-family:'DM Mono',monospace;
+  font-size:0.9rem;color:var(--green);
+  flex:1;word-break:break-all;
+}
+.ca-copy{
+  background:transparent;border:1px solid var(--border);
+  color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem;
+  padding:0.5rem 1rem;cursor:none;letter-spacing:0.1em;
+  transition:all 0.2s;white-space:nowrap;
+}
+.ca-copy:hover{border-color:var(--green);color:var(--green)}
+
+/* COMMUNITY */
+#community{
+  background:var(--bg2);
+  text-align:center;
+}
+.community-inner{max-width:700px;margin:0 auto;padding:6rem 2rem}
+.community-inner .section-title{font-size:clamp(3rem,8vw,7rem)}
+.community-inner p{
+  font-size:1rem;color:var(--muted);line-height:1.8;margin-bottom:3rem;
+}
+.community-inner p em{color:var(--white);font-style:normal}
+.social-links{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.social-link{
+  display:flex;align-items:center;gap:0.7rem;
+  border:1px solid var(--border);
+  padding:0.9rem 1.8rem;
+  text-decoration:none;color:var(--white);
+  font-size:0.85rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+  transition:all 0.2s;
+}
+.social-link:hover{border-color:var(--green);color:var(--green)}
+.social-link svg{width:18px;height:18px;fill:currentColor}
+
+/* FOOTER */
+footer{
+  background:var(--bg);
+  border-top:1px solid var(--border);
+  padding:2.5rem 3rem;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:1rem;
+}
+.footer-logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.5rem;color:var(--green);letter-spacing:0.05em;
+}
+.footer-disclaimer{
+  font-size:0.72rem;color:var(--muted);
+  max-width:600px;line-height:1.5;
+}
+.footer-right{
+  font-family:'DM Mono',monospace;
+  font-size:0.7rem;color:var(--muted);
+  text-align:right;letter-spacing:0.08em;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scaleIn{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes dash{to{stroke-dashoffset:0}}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(30px);transition:all 0.7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem}
+  .nav-links{display:none}
+  .about-grid,.donut-wrap{grid-template-columns:1fr}
+  .token-grid{grid-template-columns:repeat(2,1fr)}
+  .roadmap-phases{grid-template-columns:repeat(2,1fr)}
+  .steps-grid{grid-template-columns:repeat(2,1fr);gap:2rem}
+  .steps-grid::before{display:none}
+}
+@media(max-width:600px){
+  .token-grid,.roadmap-phases{grid-template-columns:1fr}
+  .steps-grid{grid-template-columns:1fr}
+  footer{flex-direction:column;text-align:center}
+  .footer-right{text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+<canvas id="chalk-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">$EINS</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#tokenomics">Tokenomics</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#buy">How to Buy</a></li>
+    <li><a href="#community">Community</a></li>
+  </ul>
+  <a href="https://pump.fun" target="_blank" class="nav-cta">Buy $EINS →</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <p class="hero-eyebrow">⚗ Solana · Fair Launch · Ghost Approved</p>
+  <h1 class="hero-title">The Smartest<br><span>Memecoin</span><br>in the Universe.</h1>
+  <p class="hero-sub">
+    Einstein figured out <em>E=mc²</em>. We figured out <em>$EINS = 🌕</em>.<br>
+    Fair launch. 0 taxes. LP burnt. Mint revoked. The math is simple.
+  </p>
+  <div class="hero-actions">
+    <a href="https://pump.fun" target="_blank" class="btn-primary">Buy on Pump.fun →</a>
+    <a href="https://t.me/EinsteinCoinSOL" target="_blank" class="btn-secondary">Join Telegram</a>
+  </div>
+  <div class="ticker-bar">
+    <span><span class="ticker-dot"></span></span>
+    <span>$EINS &nbsp;|&nbsp; <span>1,000,000,000</span> Supply</span>
+    <span>Tax: <span>0 / 0</span></span>
+    <span>LP: <span>BURNT 🔥</span></span>
+    <span>Chain: <span>◎ Solana</span></span>
+    <span>Mint: <span>REVOKED ✅</span></span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>$EINS</span>&nbsp;·&nbsp;RELATIVELY RICH&nbsp;·&nbsp;ABSOLUTELY DEGEN&nbsp;·&nbsp;
+    <span>E = mc²</span>&nbsp;·&nbsp;<span>$EINS = 🌕</span>&nbsp;·&nbsp;
+    LP BURNT FOREVER&nbsp;·&nbsp;0 TAXES&nbsp;·&nbsp;GHOST APPROVED&nbsp;·&nbsp;
+    <span>$EINS</span>&nbsp;·&nbsp;RELATIVELY RICH&nbsp;·&nbsp;ABSOLUTELY DEGEN&nbsp;·&nbsp;
+    <span>E = mc²</span>&nbsp;·&nbsp;<span>$EINS = 🌕</span>&nbsp;·&nbsp;
+    LP BURNT FOREVER&nbsp;·&nbsp;0 TAXES&nbsp;·&nbsp;GHOST APPROVED&nbsp;·&nbsp;
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-visual reveal">
+        <div class="about-visual-inner">
+          E=mc²<br><br>
+          $EINS<br>=<br>🌕
+        </div>
+        <div class="formula-badge">A. EINSTEIN — PHYSICIST</div>
+      </div>
+      <div class="about-text reveal">
+        <p class="section-label">// Origin Story</p>
+        <h2 class="section-title">A Brief History<br>of Gains</h2>
+        <p>Albert Einstein was born in 1879. He invented relativity, won the Nobel Prize, and spent his last years at Princeton staring at equations. <strong>What history books don't tell you: he was deeply unsatisfied.</strong> Not with physics. With the bag.</p>
+        <p>In 2024, his ghost corrected this mistake. He logged onto Pump.fun at 3:47 AM, deployed $EINS, burnt the LP, and typed a single message before disconnecting:</p>
+        <div class="about-quote">
+          "The definition of insanity is doing the same thing over and over and expecting different results.<br><br>
+          This time, ape in."
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOKENOMICS -->
+<section id="tokenomics">
+  <div class="section-inner">
+    <p class="section-label reveal">// Peer-Reviewed Tokenomics</p>
+    <h2 class="section-title reveal">The Unified Theory<br>of Tokenomics</h2>
+
+    <div class="token-grid">
+      <div class="token-card reveal">
+        <div class="token-card-label">Total Supply</div>
+        <div class="token-card-value">1B</div>
+        <div class="token-card-sub">1,000,000,000 $EINS<br>Round number. Clean. Elegant.</div>
+      </div>
+      <div class="token-card reveal">
+        <div class="token-card-label">Buy / Sell Tax</div>
+        <div class="token-card-value">0 / 0</div>
+        <div class="token-card-sub">Trade freely. No fees.<br>Albert would approve.</div>
+      </div>
+      <div class="token-card reveal">
+        <div class="token-card-label">Team Tokens</div>
+        <div class="token-card-value">0%</div>
+        <div class="token-card-sub">Albert doesn't need money.<br>He needs justice.</div>
+      </div>
+      <div class="token-card reveal">
+        <div class="token-card-label">Liquidity Pool</div>
+        <div class="token-card-value">BURNT</div>
+        <div class="token-card-sub">85% locked forever.<br>Gone. Irreversible. Yes, really.</div>
+      </div>
+      <div class="token-card reveal">
+        <div class="token-card-label">Mint Authority</div>
+        <div class="token-card-value">REVOKED</div>
+        <div class="token-card-sub">No new tokens can be created.<br>Verifiable on-chain in 30s.</div>
+      </div>
+      <div class="token-card reveal">
+        <div class="token-card-label">Burnt at Launch</div>
+        <div class="token-card-value">10%</div>
+        <div class="token-card-sub">Gone. Like his hair.<br>100,000,000 tokens vaporized.</div>
+      </div>
+    </div>
+
+    <div class="donut-wrap reveal">
+      <svg class="donut-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="75" fill="none" stroke="#0c0d10" stroke-width="38"/>
+        <!-- 85% LP -->
+        <circle cx="100" cy="100" r="75" fill="none" stroke="#00ff88" stroke-width="38"
+          stroke-dasharray="400.5 471.2" stroke-dashoffset="0" transform="rotate(-90 100 100)"
+          style="animation:dash 1.5s 0.5s ease forwards;stroke-dashoffset:471;"/>
+        <!-- 10% Burnt -->
+        <circle cx="100" cy="100" r="75" fill="none" stroke="#ff4455" stroke-width="38"
+          stroke-dasharray="47.1 471.2" stroke-dashoffset="-400.5" transform="rotate(-90 100 100)"/>
+        <!-- 5% Community -->
+        <circle cx="100" cy="100" r="75" fill="none" stroke="#ffc800" stroke-width="38"
+          stroke-dasharray="23.6 471.2" stroke-dashoffset="-447.6" transform="rotate(-90 100 100)"/>
+        <text x="100" y="95" text-anchor="middle" fill="#00ff88" font-family="Bebas Neue,sans-serif" font-size="28">$EINS</text>
+        <text x="100" y="115" text-anchor="middle" fill="#6b6f7a" font-family="DM Mono,monospace" font-size="9">DISTRIBUTION</text>
+      </svg>
+      <div class="donut-legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#00ff88"></div>
+          <div><span class="legend-pct">85%</span></div>
+          <div class="legend-label"><strong>Liquidity Pool</strong>Burnt forever. RIP.</div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#ff4455"></div>
+          <div><span class="legend-pct">10%</span></div>
+          <div class="legend-label"><strong>Burnt at Launch</strong>Gone. Like his hair.</div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#ffc800"></div>
+          <div><span class="legend-pct">5%</span></div>
+          <div class="legend-label"><strong>Community & Airdrops</strong>For the believers.</div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#333"></div>
+          <div><span class="legend-pct">0%</span></div>
+          <div class="legend-label"><strong>Team</strong>Albert doesn't need money.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="section-inner">
+    <p class="section-label reveal">// The Grand Theory</p>
+    <h2 class="section-title reveal">Roadmap</h2>
+
+    <div class="roadmap-phases">
+      <div class="phase reveal">
+        <div class="phase-num">01</div>
+        <span class="phase-tag done">✓ Completed</span>
+        <h3>Special Theory of Launch</h3>
+        <ul>
+          <li class="done-item">Token deployed on Pump.fun</li>
+          <li class="done-item">LP burnt, mint revoked</li>
+          <li class="done-item">Website live</li>
+          <li class="done-item">Telegram + Twitter launched</li>
+          <li class="done-item">First 500 holders achieved</li>
+        </ul>
+      </div>
+      <div class="phase reveal">
+        <div class="phase-num">02</div>
+        <span class="phase-tag active">⚡ In Progress</span>
+        <h3>General Theory of Hype</h3>
+        <ul>
+          <li>1,000 holders milestone</li>
+          <li>CoinGecko & CMC listing</li>
+          <li>First meme contest</li>
+          <li>Influencer outreach (CT anons only)</li>
+        </ul>
+      </div>
+      <div class="phase reveal">
+        <div class="phase-num">03</div>
+        <span class="phase-tag soon">◎ Upcoming</span>
+        <h3>Quantum Entanglement with the Moon</h3>
+        <ul>
+          <li>5,000 holders</li>
+          <li>CEX listing attempts</li>
+          <li>$EINS merch drop</li>
+          <li>Community burn event #1</li>
+        </ul>
+      </div>
+      <div class="phase reveal">
+        <div class="phase-num">04</div>
+        <span class="phase-tag soon">🌕 Inevitable</span>
+        <h3>Unified Field Theory of Gains</h3>
+        <ul>
+          <li>$EINS reaches escape velocity</li>
+          <li>Albert's ghost confirmed top holder</li>
+          <li>Physicists baffled. Degens enriched.</li>
+          <li>Moon. Confirmed. Peer-reviewed.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO BUY -->
+<section id="buy">
+  <div class="section-inner">
+    <p class="section-label reveal">// 4 Steps. Even a Nobel Laureate Could Do It.</p>
+    <h2 class="section-title reveal">How to Buy<br>$EINS</h2>
+
+    <div class="steps-grid reveal">
+      <div class="step">
+        <div class="step-circle">01</div>
+        <h3>Get Phantom Wallet</h3>
+        <p>Download Phantom at <a href="https://phantom.app" target="_blank">phantom.app</a> — free, 2 minutes, write down your seed phrase. Albert would.</p>
+      </div>
+      <div class="step">
+        <div class="step-circle">02</div>
+        <h3>Buy Solana (SOL)</h3>
+        <p>Get some SOL on Coinbase, Binance, or Kraken. Transfer to your Phantom wallet. You'll need ~0.01 SOL for gas.</p>
+      </div>
+      <div class="step">
+        <div class="step-circle">03</div>
+        <h3>Go to Pump.fun</h3>
+        <p>Head to <a href="https://pump.fun" target="_blank">pump.fun</a>, search for $EINS or paste the contract address below.</p>
+      </div>
+      <div class="step">
+        <div class="step-circle">04</div>
+        <h3>Ape In</h3>
+        <p>Hit Buy. Set slippage to 1–3%. Confirm. Welcome to the theory of gains. You are now an <strong>EINSTEINER 🧠</strong></p>
+      </div>
+    </div>
+
+    <div class="ca-box reveal">
+      <span class="ca-label">Contract Address</span>
+      <span class="ca-address" id="ca-text">À coller ici au lancement sur Pump.fun</span>
+      <button class="ca-copy" onclick="copyCA()">Copy CA</button>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section id="community">
+  <div class="community-inner">
+    <p class="section-label reveal">// The Einsteinium</p>
+    <h2 class="section-title reveal">Join the<br><span style="color:var(--green)">Theory</span></h2>
+    <p class="reveal">
+      <em>10,000 degens can't be wrong.</em><br>
+      (They can. But not this time.)
+    </p>
+    <div class="social-links reveal">
+      <a href="https://t.me/EinsteinCoinSOL" target="_blank" class="social-link">
+        <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.94 8.19l-2.02 9.52c-.14.66-.54.82-1.08.51l-3-2.21-1.45 1.4c-.16.16-.3.3-.61.3l.21-3.02 5.51-4.97c.24-.21-.05-.33-.37-.12L6.37 13.96l-2.95-.92c-.64-.2-.65-.64.13-.95l11.53-4.45c.53-.19 1 .13.86.55z"/></svg>
+        Telegram
+      </a>
+      <a href="https://twitter.com/EinsteinCoinSOL" target="_blank" class="social-link">
+        <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Twitter / X
+      </a>
+      <a href="https://pump.fun" target="_blank" class="social-link">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Pump.fun
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">$EINS</div>
+  <p class="footer-disclaimer">
+    $EINS is a memecoin created for entertainment and satirical purposes only. Albert Einstein is not affiliated with this project (he is deceased). This is not financial advice. Do not invest what you cannot afford to lose. E=mc² is a registered formula of the universe. $EINS is not.
+  </p>
+  <div class="footer-right">
+    © 2025 Einstein Coin<br>
+    All rights irrelatively reserved.<br>
+    <span style="color:var(--green)">◎ Solana</span>
+  </div>
+</footer>
+
+<script>
+// Cursor
+const cursor=document.getElementById('cursor');
+const ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+});
+function animRing(){
+  rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+
+// Chalk canvas background
+const canvas=document.getElementById('chalk-canvas');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+const formulas=['E=mc²','∇·E=ρ/ε₀','ΔxΔp≥ℏ/2','F=ma','∮B·dA=0','$EINS=🌕','S=k·ln(Ω)','E=hf','PV=nRT','λ=h/p'];
+ctx.font='bold 18px DM Mono, monospace';
+ctx.fillStyle='#00ff88';
+for(let i=0;i<40;i++){
+  ctx.globalAlpha=Math.random()*0.4+0.05;
+  ctx.save();
+  const x=Math.random()*canvas.width;
+  const y=Math.random()*canvas.height;
+  ctx.translate(x,y);
+  ctx.rotate((Math.random()-0.5)*0.4);
+  ctx.fillText(formulas[Math.floor(Math.random()*formulas.length)],0,0);
+  ctx.restore();
+}
+// lines
+ctx.globalAlpha=0.05;ctx.strokeStyle='#00ff88';ctx.lineWidth=1;
+for(let i=0;i<15;i++){
+  ctx.beginPath();
+  ctx.moveTo(Math.random()*canvas.width,Math.random()*canvas.height);
+  ctx.lineTo(Math.random()*canvas.width,Math.random()*canvas.height);
+  ctx.stroke();
+}
+
+// Scroll reveal
+const reveals=document.querySelectorAll('.reveal');
+const io=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('visible'),i*80);
+    }
+  });
+},{threshold:0.1});
+reveals.forEach(el=>io.observe(el));
+
+// Copy CA
+function copyCA(){
+  const t=document.getElementById('ca-text').textContent;
+  if(navigator.clipboard){navigator.clipboard.writeText(t);}
+  const btn=document.querySelector('.ca-copy');
+  btn.textContent='Copied! ✓';
+  btn.style.color='var(--green)';
+  btn.style.borderColor='var(--green)';
+  setTimeout(()=>{btn.textContent='Copy CA';btn.style.color='';btn.style.borderColor='';},2000);
+}
+</script>
+</body>
+</html>
